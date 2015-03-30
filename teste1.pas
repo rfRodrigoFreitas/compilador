@@ -1,9 +1,15 @@
-program exemplo75 (input, output);
-var m,n, h, r :  integer;
+program exemplo5 (input, output);
+var n, k: integer;
+    f1, f2, f3 : integer;
 begin
-    m:=1;
-    n:=2;
-    h:=3;
-    r:=8;
-	r := m - n * (h  - r) > ( h / n ) 
+    f1 := 0; 
+    f2 := 1;
+    k := 1;
+    while k <= n do
+    begin
+        f3 := f1 + f2;
+        f1 := f2;
+        f2 := f3;
+        k := k + 1
+    end;
 end.

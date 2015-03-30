@@ -40,8 +40,6 @@ programa:			    { geraCodigo (NULL, "INPP"); }
 			    	    bloco PONTO 
 				        { sprintf(str, "DMEM %d", num_vars_total); geraCodigo (NULL, str);
 			     	    geraCodigo (NULL, "PARA");
-			     	    mostraTS(tabela_simbolos); 
-                        mostraTT(tabela_tipos);
                         printf("###########################################################");
                         }
 ;
@@ -101,13 +99,16 @@ comandos: 			    comandos PONTO_E_VIRGULA comando
                         | comando
 ;
 
-comando: 			    comando_composto | comando_sem_rotulo
+comando: 			    comando_composto | comando_sem_rotulo | repeticao
+;
+
+repeticao:              WHILE expressao DO comando_composto
 ;
 
 comando_sem_rotulo: 	atribuicao 
 ;
 
-atribuicao: 			IDENT { simb_esq = buscaTS(tabela_simbolos, token); } ATRIBUICAO expressao { mostraTT(tabela_tipos); empilhaTT(tabela_tipos, simb_esq->tipo); mostraTT(tabela_tipos); sprintf(str, "ARMZ %d,%d", simb_esq->nivel_lex, simb_esq->deslocamento); if(checaTipo(tabela_tipos, simb_esq->tipo)) geraCodigo(NULL, str); else return yyerror("syntax error"); }
+atribuicao: 			IDENT { simb_esq = buscaTS(tabela_simbolos, token); } ATRIBUICAO expressao { empilhaTT(tabela_tipos, simb_esq->tipo); sprintf(str, "ARMZ %d,%d", simb_esq->nivel_lex, simb_esq->deslocamento); if(checaTipo(tabela_tipos, simb_esq->tipo)) geraCodigo(NULL, str); else return yyerror("syntax error"); }
 ;
 
 expressao: 			    expressao_simples MAIOR expressao_simples { if(checaTipo(tabela_tipos, "integer") == 1) geraCodigo(NULL, "CMMA"); else return yyerror("syntax error"); } |
@@ -132,7 +133,7 @@ termo:                  fator MULT  fator { if(checaTipo(tabela_tipos, "integer"
 ;
 
 fator: 				    ABRE_PARENTESES expressao FECHA_PARENTESES
-            			| IDENT { variavel = buscaTS(tabela_simbolos, token); sprintf(str, "ARMZ %d,%d", variavel->nivel_lex, variavel->deslocamento); geraCodigo(NULL, str); empilhaTT(tabela_tipos, variavel->tipo);} 
+            			| IDENT { variavel = buscaTS(tabela_simbolos, token); sprintf(str, "CRVL %d,%d", variavel->nivel_lex, variavel->deslocamento); geraCodigo(NULL, str); empilhaTT(tabela_tipos, variavel->tipo);} 
             			| NUMERO  { sprintf (str, "CRCT %d", atoi(token)); geraCodigo (NULL, str); empilhaTT(tabela_tipos, "integer"); }
             			| TRUE    { geraCodigo (NULL, "CRCT 1"); empilhaTT(tabela_tipos, "boolean"); }
             			| FALSE   { geraCodigo (NULL, "CRCT 0"); empilhaTT(tabela_tipos, "boolean"); }

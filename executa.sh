@@ -7,7 +7,7 @@ if [ $? == 0 ]; then
     as mepa.s -o mepa.o
     if [ $? == 0 ]; then
         echo "ligando..."
-        ld mepa.o -o mepa -lc -dynamic-linker /lib/ld-linux.so.2  
+        ld mepa.o -o mepa -lc -dynamic-linker /lib/ld-linux.so.2
         if [ $? == 0 ]; then
             echo "Executando"
             ./mepa
